@@ -25,7 +25,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .avatar{width:40px;height:40px;border-radius:50%;background:#fff3e0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:#c07800;flex-shrink:0}
 .cname{font-size:14px;font-weight:600}
 .caddr{font-size:12px;color:#888}
-.stamps-row{display:flex;gap:3px;flex-wrap:wrap;margin-bottom:6px}
+.stamps-row{display:flex;gap:3px;flex-wrap:wrap;margin-bottom:4px}
 .stamp{width:20px;height:20px;border-radius:50%;border:1px solid #ddd;display:flex;align-items:center;justify-content:center;font-size:9px;color:#ccc}
 .stamp.filled{background:#fff3e0;border-color:#F7A11A;color:#c07800}
 .stamp.milestone{background:#F7A11A;border-color:#e09018;color:#fff}
@@ -34,11 +34,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .badge.has{background:#dcfce7;color:#166534}
 .badge.lost{background:#fef9c3;color:#854d0e}
 .badge.none{background:#f4f4f0;color:#666;border:1px solid #e0e0db}
+.card-num{font-size:11px;color:#888;background:#f4f4f0;padding:2px 8px;border-radius:6px;border:1px solid #e0e0db}
 .next-r{font-size:11px;color:#aaa}
 .reward-ready{font-size:11px;color:#166534;font-weight:600}
 .panel{background:#fff;border:1px solid #e5e5e0;border-radius:12px;padding:16px;margin-bottom:14px}
 .panel h3{font-size:15px;font-weight:600;margin-bottom:12px}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
 .field label{font-size:12px;color:#888;display:block;margin-bottom:4px}
 .field input,.field select{width:100%;padding:8px 10px;border:1px solid #ddd;border-radius:8px;font-size:14px;color:#1a1a1a;background:#fff}
 .field input:focus,.field select:focus{outline:none;border-color:#F7A11A}
@@ -60,6 +62,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .total-amt{font-size:24px;font-weight:700;color:#F7A11A}
 .breakdown{font-size:12px;color:#aaa;margin-top:2px}
 .reward-banner{background:#dcfce7;border:1px solid #86efac;border-radius:8px;padding:10px 12px;font-size:13px;color:#166534;margin-top:10px}
+.card-advance-banner{background:#eff6ff;border:1px solid #93c5fd;border-radius:8px;padding:10px 12px;font-size:13px;color:#1e40af;margin-top:8px}
 .reward-opts{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}
 .ropt{border:1px solid #e5e5e0;border-radius:8px;padding:8px 10px;font-size:12px;cursor:pointer;background:#fafaf8;text-align:left}
 .ropt:hover{border-color:#F7A11A}
@@ -72,6 +75,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .txn-amt{font-size:15px;font-weight:700;text-align:right;white-space:nowrap}
 .txn-orig{font-size:11px;color:#ccc;text-decoration:line-through;text-align:right}
 .sep{height:1px;background:#f0f0ec;margin:12px 0}
+.card-pills{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px}
+.card-pill{font-size:10px;padding:2px 8px;border-radius:10px;border:1px solid #ddd;color:#888;background:#f9f9f7}
+.card-pill.active{background:#F7A11A;border-color:#F7A11A;color:#fff;font-weight:600}
+.card-pill.completed{background:#dcfce7;border-color:#86efac;color:#166534}
 .toast{position:fixed;bottom:20px;right:20px;background:#1a1a1a;color:#fff;border-radius:10px;padding:10px 16px;font-size:13px;font-weight:500;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999;max-width:300px}
 .toast.show{opacity:1}
 .toast.err{background:#991b1b}
@@ -101,7 +108,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
         <option value="none">No card</option>
       </select>
       <button class="btn primary" onclick="openAdd()">+ Add customer</button>
-      <button class="btn" onclick="loadCustomers()" title="Refresh">↺ Refresh</button>
+      <button class="btn" onclick="loadCustomers()">↺ Refresh</button>
     </div>
     <div class="grid" id="customer-grid"></div>
   </div>
@@ -156,12 +163,22 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
         <div class="field"><label>Name</label><input type="text" id="add-name" placeholder="Full name"></div>
         <div class="field"><label>Address</label><input type="text" id="add-addr" placeholder="Blk X Lot X Phase X"></div>
       </div>
-      <div class="field" style="margin-top:10px"><label>Loyalty card status</label>
-        <select id="add-card">
-          <option value="has">Has loyalty card</option>
-          <option value="lost">Lost card (starts from 0)</option>
-          <option value="none">No card yet</option>
-        </select>
+      <div class="row2" style="margin-top:10px">
+        <div class="field"><label>Loyalty card status</label>
+          <select id="add-card">
+            <option value="has">Has loyalty card</option>
+            <option value="lost">Lost card (starts from 0)</option>
+            <option value="none">No card yet</option>
+          </select>
+        </div>
+        <div class="field"><label>Card number</label>
+          <select id="add-cardnum">
+            <option value="1">Card 1 (1st card)</option>
+            <option value="2">Card 2 (2nd card)</option>
+            <option value="3">Card 3 (3rd card)</option>
+            <option value="4">Card 4 (4th card)</option>
+          </select>
+        </div>
       </div>
       <button class="btn primary" onclick="saveNewCustomer()" style="margin-top:14px;width:100%;justify-content:center">Save customer</button>
     </div>
@@ -174,54 +191,85 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
 <script>
 // ============================================================
-// PASTE YOUR APPS SCRIPT WEB APP URL BELOW
-// ============================================================
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwhqsu9JeIAg88OgcAGtHhJUXbe5s-GG0R3GGzuCLbDitg0pgkJDfRzg0GOM8kk_Xihuw/exec';
 // ============================================================
 
-const SERVICES = [
-  {name:"7kg COMBO Regular",price:180},
-  {name:"10kg COMBO Regular",price:250},
-  {name:"7kg Wash, Dry, Fold",price:140},
-  {name:"10kg Wash, Dry, Fold",price:210},
-  {name:"7kg Wash only",price:60},
-  {name:"10kg Wash only",price:80},
-  {name:"7kg Dry only",price:70},
-  {name:"3kg Comforter",price:180},
-  {name:"5kg Comforter",price:250},
-  {name:"5kg Blankets",price:180},
-  {name:"6kg Blankets",price:200},
-  {name:"8kg Blankets",price:250},
-  {name:"5kg Bedsheets",price:180},
-  {name:"6kg Bedsheets",price:200},
-  {name:"8kg Bedsheets",price:250},
-  {name:"5kg Jeans",price:180},
-  {name:"5kg Curtains",price:180},
-  {name:"(2)8kg Curtains",price:500},
-  {name:"8kg Sofa cover",price:250},
-  {name:"5kg Stuffed toys",price:180},
-  {name:"3kg Carpet",price:180},
-  {name:"8kg Doormats",price:250},
-  {name:"5kg Towels and Bags",price:180},
-  {name:"1kg Iron",price:30},
-  {name:"Other (manual)",price:0},
-];
+// Category → sizes → services → price
+const CATALOG = {
+  'Regular clothes': {
+    sizes: ['7kg','10kg'],
+    services: {
+      'Wash only':          {'7kg':60,  '10kg':80},
+      'Dry only':           {'7kg':70,  '10kg':90},
+      'Fold only':          {'7kg':10,  '10kg':15},
+      'Wash, Dry & Fold':   {'7kg':180, '10kg':250},
+    }
+  },
+  'Comforter': {
+    sizes: ['per piece (max 3kg)'],
+    services: {
+      'Wash, Dry & Fold':   {'per piece (max 3kg)':180},
+    }
+  },
+  'Blankets': {
+    sizes: ['5kg','8kg'],
+    services: {
+      'Wash, Dry & Fold':   {'5kg':180, '8kg':250},
+    }
+  },
+  'Bedsheets': {
+    sizes: ['5kg','8kg'],
+    services: {
+      'Wash, Dry & Fold':   {'5kg':180, '8kg':250},
+    }
+  },
+  'Towels': {
+    sizes: ['5kg','8kg'],
+    services: {
+      'Wash, Dry & Fold':   {'5kg':180, '8kg':250},
+    }
+  },
+  'Jeans': {
+    sizes: ['5kg','8kg'],
+    services: {
+      'Wash, Dry & Fold':   {'5kg':180, '8kg':250},
+    }
+  },
+  'Others': {
+    sizes: ['—'],
+    services: {
+      'Curtains':           {'—':180},
+      'Sofa cover':         {'—':250},
+      'Stuffed toys':       {'—':180},
+      'Carpet':             {'—':180},
+      'Doormats':           {'—':250},
+      'Iron (per kg)':      {'—':30},
+      'Other (manual)':     {'—':0},
+    }
+  },
+};
+
+function getPrice(cat, svc, size){
+  try{ return CATALOG[cat].services[svc][size] || 0; } catch(e){ return 0; }
+}
+function getSizes(cat){ return cat && CATALOG[cat] ? CATALOG[cat].sizes : []; }
+function getServices(cat){ return cat && CATALOG[cat] ? Object.keys(CATALOG[cat].services) : []; }
 
 const ADDONS = [
-  {key:"fabcon",label:"Fabcon",price:10,unit:"each"},
-  {key:"liquiddet",label:"Liquid detergent",price:20,unit:"each"},
-  {key:"zonrox",label:"Zonrox",price:15,unit:"each"},
-  {key:"custsoap",label:"Customer has own soap/fabcon",price:-40,special:true},
+  {key:"soap",   label:"Detergent soap",      price:20, unit:"pc"},
+  {key:"fabcon", label:"Fabric conditioner",  price:10, unit:"pc"},
+  {key:"zonrox", label:"Zonrox color safe",   price:15, unit:"pc"},
+  {key:"prewash",label:"Pre-wash",            price:20, unit:""},
+  {key:"custsoap",label:"Customer has own soap & fabcon", price:-40, special:true},
 ];
 
 let customers=[], nextLocalId=9000, activeId=null, selectedReward=null;
-let svcLines=[{svc:SERVICES[0].name,qty:1,manual:0}];
-let addonQtys={fabcon:0,liquiddet:0,zonrox:0,custsoap:false};
+let svcLines=[];
+let addonQtys={soap:0,fabcon:0,zonrox:0,prewash:0,custsoap:false};
 
 // ---- API ----
 async function apiFetch(params){
-  const url=SCRIPT_URL+'?'+new URLSearchParams(params);
-  const res=await fetch(url);
+  const res=await fetch(SCRIPT_URL+'?'+new URLSearchParams(params));
   return res.json();
 }
 async function apiPost(body){
@@ -233,7 +281,7 @@ async function loadCustomers(){
   showLoader(true);
   try{
     const data=await apiFetch({action:'getCustomers'});
-    if(data&&data.customers) customers=data.customers.map(c=>({...c,stamps:Number(c.stamps),txns:[]}));
+    if(data&&data.customers) customers=data.customers.map(c=>({...c,stamps:Number(c.stamps),cardNum:Number(c.cardNum)||1,txns:[]}));
   }catch(e){showToast('Could not reach Google Sheets','err');}
   showLoader(false);
   renderList();
@@ -247,16 +295,40 @@ async function loadTxns(id){
   }catch(e){}
 }
 
-// ---- HELPERS ----
-function initials(n){return n.split(' ').slice(0,2).map(w=>w[0]||'').join('').toUpperCase()}
-function getReward(s){const c=s%15;if(c===5)return{type:'disc',amount:30,label:'₱30 off'};if(c===10)return{type:'disc',amount:50,label:'₱50 off'};if(c===0&&s>0)return{type:'free',label:'Free reward'};return null;}
-function nextReward(s){const c=s%15;if(c<5)return{in:5-c,label:'₱30 off'};if(c<10)return{in:10-c,label:'₱50 off'};return{in:15-c,label:'free reward'};}
-function stamps(s,max){
-  const show=max||Math.max(15,Math.ceil((s||1)/15)*15);
-  return Array.from({length:show},(_,i)=>{
-    const n=i+1,m=n%15,isMile=(m===5||m===10||m===0);
+// ---- LOYALTY HELPERS ----
+// stamps = current stamps on THIS card (0-15)
+// cardNum = which card they're on (1, 2, 3, 4...)
+function getReward(stamps){
+  if(stamps===5)  return {type:'disc',amount:30,label:'₱30 off'};
+  if(stamps===10) return {type:'disc',amount:50,label:'₱50 off'};
+  if(stamps===15) return {type:'free',label:'Free reward'};
+  return null;
+}
+function nextReward(stamps){
+  if(stamps<5)  return {in:5-stamps, label:'₱30 off'};
+  if(stamps<10) return {in:10-stamps,label:'₱50 off'};
+  if(stamps<15) return {in:15-stamps,label:'free reward'};
+  return {in:0,label:'card complete!'};
+}
+function cardLabel(n){return n===1?'1st':n===2?'2nd':n===3?'3rd':n+'th';}
+
+function initials(n){return n.split(' ').slice(0,2).map(w=>w[0]||'').join('').toUpperCase();}
+
+function renderStampDots(s,max){
+  return Array.from({length:max||15},(_,i)=>{
+    const n=i+1, isMile=(n===5||n===10||n===15);
     return `<div class="stamp ${n<=s?(isMile?'milestone':'filled'):''}" title="Visit ${n}">${isMile&&n<=s?'★':''}</div>`;
   }).join('');
+}
+
+function renderCardPills(cardNum, stamps){
+  let pills='';
+  for(let i=1;i<=cardNum;i++){
+    const isActive=i===cardNum;
+    const isDone=i<cardNum;
+    pills+=`<span class="card-pill ${isActive?'active':isDone?'completed':''}">${cardLabel(i)} card${isDone?' ✓':isActive?' ('+stamps+'/15)':''}</span>`;
+  }
+  return pills;
 }
 
 // ---- LIST ----
@@ -267,13 +339,15 @@ function renderList(){
   const list=customers.filter(c=>(c.name.toLowerCase().includes(q)||(c.addr||'').toLowerCase().includes(q))&&(!cf||c.card===cf));
   if(!list.length){g.innerHTML=`<div class="empty" style="grid-column:1/-1">${customers.length?'No customers match.':'No customers yet — add your first one!'}</div>`;return;}
   g.innerHTML=list.map(c=>{
-    const rw=getReward(c.stamps),nr=nextReward(c.stamps);
+    const rw=getReward(c.stamps), nr=nextReward(c.stamps);
     const cb=c.card==='has'?'<span class="badge has">✓ Has card</span>':c.card==='lost'?'<span class="badge lost">⚠ Lost card</span>':'<span class="badge none">No card</span>';
     const rb=rw?`<span class="reward-ready">★ ${rw.label} ready!</span>`:`<span class="next-r">${nr.in} visit${nr.in>1?'s':''} to ${nr.label}</span>`;
+    const cardN=c.cardNum||1;
     return `<div class="card" onclick="openDetail('${c.id}')">
       <div class="card-top"><div class="avatar">${initials(c.name)}</div><div><div class="cname">${c.name}</div><div class="caddr">${c.addr||'—'}</div></div></div>
-      <div class="stamps-row">${stamps(c.stamps,15)}</div>
-      <div style="font-size:11px;color:#bbb;margin-bottom:6px">${c.stamps} visit${c.stamps!==1?'s':''} total</div>
+      <div class="card-pills">${renderCardPills(cardN, c.stamps)}</div>
+      <div class="stamps-row">${renderStampDots(c.stamps,15)}</div>
+      <div style="font-size:11px;color:#bbb;margin-bottom:6px">${c.stamps}/15 on ${cardLabel(cardN)} card</div>
       <div class="card-footer">${cb}${rb}</div>
     </div>`;
   }).join('');
@@ -282,43 +356,65 @@ function renderList(){
 // ---- DETAIL ----
 async function openDetail(id){
   activeId=id; selectedReward=null;
-  svcLines=[{svc:SERVICES[0].name,qty:1,manual:0}];
-  addonQtys={fabcon:0,liquiddet:0,zonrox:0,custsoap:false};
+  svcLines=[defaultLine()];
+  addonQtys={soap:0,fabcon:0,zonrox:0,prewash:0,custsoap:false};
   show('detail');
   document.getElementById('txn-date').value=new Date().toISOString().split('T')[0];
   document.getElementById('txn-delivery').value='pickup';
   document.getElementById('delivery-fee-row').style.display='none';
-  showLoader(true);
-  await loadTxns(id);
-  showLoader(false);
   renderDetail(); renderSvcLines(); renderAddons(); recalc();
+  // Load transaction history in background — doesn't block the form
+  loadTxnsBackground(id);
+}
+
+async function loadTxnsBackground(id){
+  document.getElementById('txn-list').innerHTML='<div style="padding:1rem;font-size:13px;color:#aaa">Loading history…</div>';
+  await loadTxns(id);
+  renderTxnList();
 }
 
 function renderDetail(){
   const c=customers.find(x=>String(x.id)===String(activeId));
   if(!c)return;
-  const opts=['has','lost','none'].map(v=>`<option value="${v}" ${c.card===v?'selected':''}>${v==='has'?'Has loyalty card':v==='lost'?'Lost card (starts from 0)':'No card yet'}</option>`).join('');
+  const cardN=c.cardNum||1;
+  const cardOpts=['has','lost','none'].map(v=>`<option value="${v}" ${c.card===v?'selected':''}>${v==='has'?'Has loyalty card':v==='lost'?'Lost card (starts from 0)':'No card yet'}</option>`).join('');
+  const cardNumOpts=[1,2,3,4].map(n=>`<option value="${n}" ${cardN===n?'selected':''}>${cardLabel(n)} card</option>`).join('');
+  const rw=getReward(c.stamps), nr=nextReward(c.stamps);
+
   document.getElementById('detail-panel').innerHTML=`
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap">
       <div class="avatar" style="width:44px;height:44px;font-size:15px">${initials(c.name)}</div>
       <div><div style="font-size:17px;font-weight:600">${c.name}</div><div style="font-size:13px;color:#888">${c.addr||'—'}</div></div>
-      <div style="margin-left:auto">
-        <label style="font-size:12px;color:#888;display:block;margin-bottom:3px">Card status</label>
-        <select onchange="updateCard('${c.id}',this.value)" style="padding:6px 10px;border:1px solid #ddd;border-radius:8px;font-size:13px">${opts}</select>
+      <div style="margin-left:auto;display:flex;gap:8px;flex-wrap:wrap">
+        <div>
+          <label style="font-size:12px;color:#888;display:block;margin-bottom:3px">Card status</label>
+          <select onchange="updateCard('${c.id}','status',this.value)" style="padding:6px 10px;border:1px solid #ddd;border-radius:8px;font-size:13px">${cardOpts}</select>
+        </div>
+        <div>
+          <label style="font-size:12px;color:#888;display:block;margin-bottom:3px">Card number</label>
+          <select onchange="updateCard('${c.id}','cardnum',this.value)" style="padding:6px 10px;border:1px solid #ddd;border-radius:8px;font-size:13px">${cardNumOpts}</select>
+        </div>
       </div>
     </div>
-    <div class="stamps-row" style="margin-bottom:6px">${stamps(c.stamps)}</div>
+    <div class="card-pills" style="margin-bottom:8px">${renderCardPills(cardN, c.stamps)}</div>
+    <div class="stamps-row" style="margin-bottom:6px">${renderStampDots(c.stamps,15)}</div>
     <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:4px">
-      <span style="font-size:13px;color:#aaa">${c.stamps} visits total</span>
-      ${getReward(c.stamps)?`<span style="font-size:13px;font-weight:600;color:#166534">★ ${getReward(c.stamps).label} available now</span>`:`<span style="font-size:12px;color:#bbb">${nextReward(c.stamps).in} more visit${nextReward(c.stamps).in>1?'s':''} to ${nextReward(c.stamps).label}</span>`}
+      <span style="font-size:13px;color:#aaa">${c.stamps}/15 stamps on ${cardLabel(cardN)} card</span>
+      ${rw?`<span style="font-size:13px;font-weight:600;color:#166534">★ ${rw.label} available now</span>`:`<span style="font-size:12px;color:#bbb">${nr.in} more visit${nr.in>1?'s':''} to ${nr.label}</span>`}
     </div>`;
+
+}
+
+function renderTxnList(){
+  const c=customers.find(x=>String(x.id)===String(activeId));
+  if(!c) return;
   const tl=document.getElementById('txn-list');
   if(!c.txns||!c.txns.length){tl.innerHTML='<div class="empty">No visits recorded yet.</div>';return;}
   tl.innerHTML=[...c.txns].reverse().map(t=>`
     <div class="txn-item">
       <div>
         <div class="txn-svc">${t.svcSummary}</div>
-        <div class="txn-meta">${t.date} · Visit #${t.visitNum}${t.delivery&&t.delivery!=='Pick-up'?' · '+t.delivery:''}</div>
+        <div class="txn-meta">${t.date} · ${t.cardLabel||''} card, visit #${t.visitNum}${t.delivery&&t.delivery!=='Pick-up'?' · '+t.delivery:''}</div>
         ${t.addons?`<div class="txn-meta">${t.addons}</div>`:''}
         ${t.reward?`<div class="txn-reward">★ ${t.reward}</div>`:''}
       </div>
@@ -329,44 +425,76 @@ function renderDetail(){
     </div>`).join('');
 }
 
-async function updateCard(id,val){
+async function updateCard(id, field, val){
   const c=customers.find(x=>String(x.id)===String(id));
   if(!c)return;
-  if(val==='lost') c.stamps=0;
-  c.card=val;
+  if(field==='status'){
+    if(val==='lost'){c.stamps=0; c.cardNum=1;}
+    c.card=val;
+    showToast(val==='lost'?'Card marked as lost — stamps and card reset':'Card status updated');
+  } else if(field==='cardnum'){
+    c.cardNum=parseInt(val);
+    showToast(`Moved to ${cardLabel(c.cardNum)} card`);
+  }
   showLoader(true);
-  await apiPost({action:'updateCustomer',data:{id:c.id,name:c.name,addr:c.addr,card:c.card,stamps:c.stamps}});
+  await apiPost({action:'updateCustomer',data:{id:c.id,name:c.name,addr:c.addr,card:c.card,stamps:c.stamps,cardNum:c.cardNum}});
   showLoader(false);
-  showToast(val==='lost'?'Card marked as lost — stamps reset to 0':'Card status updated');
-  renderDetail();
+  renderDetail(); recalc();
 }
 
 // ---- SERVICE LINES ----
-function svcPrice(n){return(SERVICES.find(s=>s.name===n)||{}).price||0;}
-function buildOpts(sel){return SERVICES.map(s=>`<option value="${s.name}" ${s.name===sel?'selected':''}>${s.name}${s.price?' — ₱'+s.price:''}</option>`).join('');}
-function addSvcLine(){svcLines.push({svc:SERVICES[0].name,qty:1,manual:0});renderSvcLines();recalc();}
+// Each line: {qty, cat, size, svc, manual}
+function defaultLine(){return {qty:1, cat:'Regular clothes', size:'7kg', svc:'Wash, Dry & Fold', manual:0};}
+function addSvcLine(){svcLines.push(defaultLine());renderSvcLines();recalc();}
 function removeSvcLine(i){if(svcLines.length===1)return;svcLines.splice(i,1);renderSvcLines();recalc();}
-function updateSvcSel(i,v){svcLines[i].svc=v;renderSvcLines();recalc();}
-function updateSvcQty(i,d){svcLines[i].qty=Math.max(1,svcLines[i].qty+d);renderSvcLines();recalc();}
-function updateSvcManual(i,v){svcLines[i].manual=parseInt(v)||0;recalc();}
+function updateCat(i,v){
+  svcLines[i].cat=v;
+  svcLines[i].size=getSizes(v)[0]||'—';
+  svcLines[i].svc=getServices(v)[0]||'';
+  renderSvcLines();recalc();
+}
+function updateSize(i,v){svcLines[i].size=v;renderSvcLines();recalc();}
+function updateSvc(i,v){svcLines[i].svc=v;renderSvcLines();recalc();}
+function updateQty(i,d){svcLines[i].qty=Math.max(1,svcLines[i].qty+d);renderSvcLines();recalc();}
+function updateManual(i,v){svcLines[i].manual=parseInt(v)||0;recalc();}
+
+function linePrice(l){
+  if(l.svc==='Other (manual)') return l.manual||0;
+  return getPrice(l.cat, l.svc, l.size);
+}
+
+function buildCatOpts(sel){return Object.keys(CATALOG).map(c=>`<option value="${c}" ${c===sel?'selected':''}>${c}</option>`).join('');}
+function buildSizeOpts(cat,sel){return getSizes(cat).map(s=>`<option value="${s}" ${s===sel?'selected':''}>${s}</option>`).join('');}
+function buildSvcOpts(cat,sel){return getServices(cat).map(s=>`<option value="${s}" ${s===sel?'selected':''}>${s}</option>`).join('');}
+
 function renderSvcLines(){
   document.getElementById('svc-lines').innerHTML=svcLines.map((l,i)=>{
-    const isM=l.svc==='Other (manual)';
-    const lp=isM?(l.manual||0):svcPrice(l.svc);
-    return `<div class="svc-line">
-      <div class="field" style="flex:2;min-width:160px">${i===0?'<label>Service</label>':''}
-        <select onchange="updateSvcSel(${i},this.value)">${buildOpts(l.svc)}</select>
+    const lp=linePrice(l);
+    const isManual=l.svc==='Other (manual)';
+    const showSize=getSizes(l.cat).length>1||(getSizes(l.cat)[0]&&getSizes(l.cat)[0]!=='—');
+    return `<div style="background:#fafaf8;border:1px solid #eee;border-radius:8px;padding:10px 12px;margin-bottom:8px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <div style="display:flex;align-items:center;gap:6px">
+          <button class="qty-btn" onclick="updateQty(${i},-1)">−</button>
+          <span style="font-size:15px;font-weight:600;min-width:22px;text-align:center">${l.qty}</span>
+          <button class="qty-btn" onclick="updateQty(${i},1)">+</button>
+          <span style="font-size:12px;color:#aaa">load${l.qty>1?'s':''}</span>
+        </div>
+        ${svcLines.length>1?`<span class="remove-svc" onclick="removeSvcLine(${i})" style="margin-bottom:0">×</span>`:''}
       </div>
-      ${isM?`<div class="field" style="min-width:90px">${i===0?'<label>Price (₱)</label>':''}<input type="number" min="0" value="${l.manual||''}" placeholder="0" oninput="updateSvcManual(${i},this.value)"></div>`:''}
-      <div class="field" style="min-width:110px">${i===0?'<label>Qty &amp; subtotal</label>':''}
-        <div class="qty-row" style="margin-top:${i===0?4:0}px">
-          <button class="qty-btn" onclick="updateSvcQty(${i},-1)">−</button>
-          <span class="qty-val">${l.qty}</span>
-          <button class="qty-btn" onclick="updateSvcQty(${i},1)">+</button>
-          <span style="font-size:12px;color:#aaa">= ₱${lp*l.qty}</span>
+      <div style="display:grid;grid-template-columns:${isManual?'1fr 1fr 1fr':'1fr 1fr 1fr'};gap:6px;flex-wrap:wrap">
+        <div class="field"><label>Category</label>
+          <select onchange="updateCat(${i},this.value)">${buildCatOpts(l.cat)}</select>
+        </div>
+        ${showSize?`<div class="field"><label>Size / weight</label>
+          <select onchange="updateSize(${i},this.value)">${buildSizeOpts(l.cat,l.size)}</select>
+        </div>`:'<div></div>'}
+        <div class="field"><label>Service</label>
+          <select onchange="updateSvc(${i},this.value)">${buildSvcOpts(l.cat,l.svc)}</select>
         </div>
       </div>
-      ${svcLines.length>1?`<span class="remove-svc" onclick="removeSvcLine(${i})">×</span>`:''}
+      ${isManual?`<div class="field" style="margin-top:6px;max-width:160px"><label>Manual price (₱)</label><input type="number" min="0" value="${l.manual||''}" placeholder="0" oninput="updateManual(${i},this.value)"></div>`:''}
+      <div style="text-align:right;font-size:13px;font-weight:600;color:#F7A11A;margin-top:6px">₱${lp} × ${l.qty} = ₱${lp*l.qty}</div>
     </div>`;
   }).join('');
 }
@@ -401,16 +529,17 @@ function toggleDeliveryFee(){document.getElementById('delivery-fee-row').style.d
 // ---- CALC ----
 function calcTotal(){
   const c=customers.find(x=>String(x.id)===String(activeId));
-  if(!c)return{total:0,breakdown:[],nextStamp:1,rw:null,svcTotal:0,addonTotal:0,custSoapDisc:0,deliveryFee:0,loyaltyDisc:0};
+  if(!c)return{total:0,breakdown:[],nextStamp:1,rw:null,svcTotal:0,addonTotal:0,custSoapDisc:0,deliveryFee:0,loyaltyDisc:0,willAdvanceCard:false};
   let svcTotal=0;
-  svcLines.forEach(l=>{svcTotal+=(l.svc==='Other (manual)'?(l.manual||0):svcPrice(l.svc))*l.qty;});
-  const addonTotal=(addonQtys.fabcon||0)*10+(addonQtys.liquiddet||0)*20+(addonQtys.zonrox||0)*15;
+  svcLines.forEach(l=>{svcTotal+=linePrice(l)*l.qty;});
+  const addonTotal=(addonQtys.soap||0)*20+(addonQtys.fabcon||0)*10+(addonQtys.zonrox||0)*15+(addonQtys.prewash||0)*20;
   const custSoapDisc=addonQtys.custsoap?40:0;
   const delType=document.getElementById('txn-delivery').value;
   const deliveryFee=delType==='deliver_paid'?(parseInt(document.getElementById('delivery-fee').value)||0):0;
   const nextStamp=c.stamps+1;
   const rw=getReward(nextStamp);
   const loyaltyDisc=(rw&&rw.type==='disc')?rw.amount:0;
+  const willAdvanceCard=nextStamp===15&&(rw&&rw.type==='free');
   const total=Math.max(0,svcTotal+addonTotal-custSoapDisc+deliveryFee-loyaltyDisc);
   const bd=[];
   if(svcTotal) bd.push(`Services ₱${svcTotal}`);
@@ -418,23 +547,31 @@ function calcTotal(){
   if(custSoapDisc) bd.push(`Own soap/fabcon −₱${custSoapDisc}`);
   if(deliveryFee) bd.push(`Delivery +₱${deliveryFee}`);
   if(loyaltyDisc) bd.push(`Loyalty −₱${loyaltyDisc}`);
-  return{svcTotal,addonTotal,custSoapDisc,deliveryFee,loyaltyDisc,total,breakdown:bd,nextStamp,rw};
+  return{svcTotal,addonTotal,custSoapDisc,deliveryFee,loyaltyDisc,total,breakdown:bd,nextStamp,rw,willAdvanceCard};
 }
+
 function recalc(){
   const r=calcTotal();
   document.getElementById('total-display').textContent=`₱${r.total}`;
   document.getElementById('breakdown').textContent=r.breakdown.length>1?r.breakdown.join(' · '):'';
   const rs=document.getElementById('reward-section');
+  let html='';
   if(r.rw){
     if(r.rw.type==='disc'){
-      rs.innerHTML=`<div class="reward-banner">★ Visit #${r.nextStamp} loyalty reward: <strong>₱${r.rw.amount} off</strong> — already deducted above.</div>`;
+      html+=`<div class="reward-banner">★ Visit #${r.nextStamp} loyalty reward: <strong>₱${r.rw.amount} off</strong> — already deducted above.</div>`;
     } else {
       const opts=['7kg regular clothes','3kg comforter','5kg bedsheets','Free laundry bag'];
-      rs.innerHTML=`<div class="reward-banner">★ Visit #${r.nextStamp} — free reward! Choose one:
+      html+=`<div class="reward-banner">★ Visit #${r.nextStamp} — free reward! Choose one:
         <div class="reward-opts">${opts.map(o=>`<button class="ropt${selectedReward===o?' sel':''}" onclick="selectedReward='${o}';recalc()">${o}</button>`).join('')}</div>
       </div>`;
     }
-  } else rs.innerHTML='';
+  }
+  if(r.willAdvanceCard){
+    const c=customers.find(x=>String(x.id)===String(activeId));
+    const nextCard=(c?c.cardNum||1:1)+1;
+    html+=`<div class="card-advance-banner">🎉 This completes the ${cardLabel(c.cardNum||1)} card! After recording, they'll automatically move to the <strong>${cardLabel(nextCard)} card</strong>.</div>`;
+  }
+  rs.innerHTML=html;
 }
 
 // ---- RECORD VISIT ----
@@ -446,31 +583,56 @@ async function recordVisit(){
   const r=calcTotal();
   if(!r.svcTotal&&!r.rw){showToast('Add at least one service','err');return;}
   if(r.rw&&r.rw.type==='free'&&!selectedReward){showToast('Choose a free reward first','err');return;}
+
+  const prevCardNum=c.cardNum||1;
   c.stamps++;
-  const svcSummary=svcLines.map(l=>`${l.qty>1?l.qty+'× ':''}${l.svc}`).join(', ');
+
+  // Auto-advance card when they hit 15
+  let advancedCard=false;
+  if(c.stamps>15){c.stamps=15;}
+  if(c.stamps===15){
+    // Will advance on NEXT visit
+    advancedCard=true;
+  }
+
+  const svcSummary=svcLines.map(l=>`${l.qty>1?l.qty+'× ':''}${l.cat==='Others'?'':l.size+' '}${l.svc}`).join(', ');
   const addonParts=[];
-  if(addonQtys.fabcon) addonParts.push(`Fabcon ×${addonQtys.fabcon}`);
-  if(addonQtys.liquiddet) addonParts.push(`Liquid det ×${addonQtys.liquiddet}`);
-  if(addonQtys.zonrox) addonParts.push(`Zonrox ×${addonQtys.zonrox}`);
+  if(addonQtys.soap)    addonParts.push(`Detergent soap ×${addonQtys.soap}`);
+  if(addonQtys.fabcon)  addonParts.push(`Fabric conditioner ×${addonQtys.fabcon}`);
+  if(addonQtys.zonrox)  addonParts.push(`Zonrox ×${addonQtys.zonrox}`);
+  if(addonQtys.prewash) addonParts.push(`Pre-wash ×${addonQtys.prewash}`);
   if(addonQtys.custsoap) addonParts.push('Own soap/fabcon (−₱40)');
   const delType=document.getElementById('txn-delivery').value;
   const deliveryLabel=delType==='pickup'?'Pick-up':delType==='deliver_free'?'Deliver (free)':'Deliver';
   const rewardLabel=r.rw?(r.rw.type==='disc'?r.rw.label+' discount':'Free: '+selectedReward):'';
   const txn={date,svcSummary,addons:addonParts.join(', '),delivery:deliveryLabel,deliveryFee:r.deliveryFee,
     orig:r.svcTotal+r.addonTotal-r.custSoapDisc+r.deliveryFee,disc:r.loyaltyDisc,amt:r.total,
-    reward:rewardLabel,visitNum:c.stamps};
+    reward:rewardLabel,visitNum:c.stamps,cardLabel:cardLabel(prevCardNum)};
   c.txns.push(txn);
+
+  // If card is now complete (15 stamps + free reward chosen), advance to next card
+  if(c.stamps===15 && r.rw && r.rw.type==='free'){
+    c.stamps=0;
+    c.cardNum=(c.cardNum||1)+1;
+  }
+
   showLoader(true);
   await Promise.all([
-    apiPost({action:'updateCustomer',data:{id:c.id,name:c.name,addr:c.addr,card:c.card,stamps:c.stamps}}),
+    apiPost({action:'updateCustomer',data:{id:c.id,name:c.name,addr:c.addr,card:c.card,stamps:c.stamps,cardNum:c.cardNum}}),
     apiPost({action:'saveTransaction',data:{...txn,customerId:c.id,customerName:c.name}})
   ]);
   showLoader(false);
-  svcLines=[{svc:SERVICES[0].name,qty:1,manual:0}];
-  addonQtys={fabcon:0,liquiddet:0,zonrox:0,custsoap:false};
+
+  svcLines=[defaultLine()];
+  addonQtys={soap:0,fabcon:0,zonrox:0,prewash:0,custsoap:false};
   selectedReward=null;
-  showToast(r.loyaltyDisc?`Visit saved! ₱${r.loyaltyDisc} loyalty discount applied.`:rewardLabel?`Visit saved! ${rewardLabel}`:'Visit saved!');
-  renderDetail(); renderSvcLines(); renderAddons(); recalc();
+
+  const toastMsg=advancedCard&&c.stamps===0
+    ? `Visit saved! Card complete 🎉 Now on ${cardLabel(c.cardNum)} card.`
+    : r.loyaltyDisc?`Visit saved! ₱${r.loyaltyDisc} loyalty discount applied.`
+    : rewardLabel?`Visit saved! ${rewardLabel}`:'Visit saved!';
+  showToast(toastMsg);
+  renderDetail(); renderTxnList(); renderSvcLines(); renderAddons(); recalc();
 }
 
 // ---- ADD CUSTOMER ----
@@ -480,30 +642,25 @@ async function saveNewCustomer(){
   if(!name){showToast('Enter a name','err');return;}
   const addr=document.getElementById('add-addr').value.trim()||'—';
   const card=document.getElementById('add-card').value;
+  const cardNum=parseInt(document.getElementById('add-cardnum').value)||1;
   showLoader(true);
-  const res=await apiPost({action:'saveCustomer',data:{name,addr,card,stamps:0}});
+  const res=await apiPost({action:'saveCustomer',data:{name,addr,card,stamps:0,cardNum}});
   showLoader(false);
-  const newC={id:res&&res.id?res.id:nextLocalId++,name,addr,card,stamps:0,txns:[]};
-  customers.push(newC);
+  customers.push({id:res&&res.id?res.id:nextLocalId++,name,addr,card,stamps:0,cardNum,txns:[]});
   backToList(); showToast(`${name} added!`);
 }
 
 // ---- NAV ----
-function show(view){
-  document.getElementById('view-list').style.display=view==='list'?'':'none';
-  document.getElementById('view-detail').style.display=view==='detail'?'':'none';
-  document.getElementById('view-add').style.display=view==='add'?'':'none';
-}
+function show(v){['list','detail','add'].forEach(x=>document.getElementById('view-'+x).style.display=x===v?'':'none');}
 function backToList(){activeId=null;show('list');renderList();}
 function showLoader(v){document.getElementById('loader').style.display=v?'flex':'none';}
 function showToast(msg,type){
   const t=document.getElementById('toast');
   t.textContent=msg;t.className='toast'+(type==='err'?' err':'');
-  t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);
+  t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3200);
 }
 
-// ---- INIT ----
-loadCustomers();
+svcLines=[defaultLine()]; loadCustomers();
 </script>
 </body>
 </html>
