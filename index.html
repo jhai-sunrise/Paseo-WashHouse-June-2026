@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cayabyab WashHouse — Loyalty Portal</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f0;color:#1a1a1a;font-size:15px;line-height:1.5}
+.header{background:#F7A11A;padding:14px 20px;display:flex;align-items:center;gap:10px}
+.header h1{color:#fff;font-size:18px;font-weight:600}
+.header .sub{color:rgba(255,255,255,0.85);font-size:13px;margin-left:auto}
+.container{max-width:900px;margin:0 auto;padding:16px}
+.topbar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.topbar input,.topbar select{padding:8px 12px;border:1px solid #ddd;border-radius:8px;background:#fff;font-size:14px;color:#1a1a1a}
+.topbar input{flex:1;min-width:160px}
+.btn{padding:8px 14px;border:1px solid #ddd;border-radius:8px;background:#fff;font-size:14px;cursor:pointer;color:#1a1a1a;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{background:#f0f0ec;border-color:#bbb}
+.btn.primary{background:#F7A11A;border-color:#F7A11A;color:#fff;font-weight:500}
+.btn.primary:hover{background:#e09018}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:12px}
+.card{background:#fff;border:1px solid #e5e5e0;border-radius:12px;padding:16px;cursor:pointer;transition:border-color .15s,box-shadow .15s}
+.card:hover{border-color:#F7A11A;box-shadow:0 2px 8px rgba(247,161,26,.12)}
+.card-top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.avatar{width:40px;height:40px;border-radius:50%;background:#fff3e0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:#c07800;flex-shrink:0}
+.cname{font-size:14px;font-weight:600}
+.caddr{font-size:12px;color:#888}
+.stamps-row{display:flex;gap:3px;flex-wrap:wrap;margin-bottom:6px}
+.stamp{width:20px;height:20px;border-radius:50%;border:1px solid #ddd;display:flex;align-items:center;justify-content:center;font-size:9px;color:#ccc}
+.stamp.filled{background:#fff3e0;border-color:#F7A11A;color:#c07800}
+.stamp.milestone{background:#F7A11A;border-color:#e09018;color:#fff}
+.card-footer{display:flex;align-items:center;justify-content:space-between;margin-top:8px;flex-wrap:wrap;gap:4px}
+.badge{font-size:11px;padding:3px 8px;border-radius:6px;font-weight:500}
+.badge.has{background:#dcfce7;color:#166534}
+.badge.lost{background:#fef9c3;color:#854d0e}
+.badge.none{background:#f4f4f0;color:#666;border:1px solid #e0e0db}
+.next-r{font-size:11px;color:#aaa}
+.reward-ready{font-size:11px;color:#166534;font-weight:600}
+.panel{background:#fff;border:1px solid #e5e5e0;border-radius:12px;padding:16px;margin-bottom:14px}
+.panel h3{font-size:15px;font-weight:600;margin-bottom:12px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.field label{font-size:12px;color:#888;display:block;margin-bottom:4px}
+.field input,.field select{width:100%;padding:8px 10px;border:1px solid #ddd;border-radius:8px;font-size:14px;color:#1a1a1a;background:#fff}
+.field input:focus,.field select:focus{outline:none;border-color:#F7A11A}
+.svc-line{display:flex;gap:8px;align-items:flex-end;margin-bottom:8px;flex-wrap:wrap}
+.qty-row{display:flex;align-items:center;gap:6px}
+.qty-btn{width:26px;height:26px;border-radius:6px;border:1px solid #ddd;background:#fff;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.qty-btn:hover{background:#f5f5f0}
+.qty-val{font-size:14px;font-weight:500;min-width:18px;text-align:center}
+.remove-svc{color:#ccc;font-size:22px;cursor:pointer;padding:0 4px;line-height:1;margin-bottom:6px}
+.remove-svc:hover{color:#e04040}
+.addons-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}
+.addon-row{display:flex;align-items:center;gap:8px;font-size:13px;padding:8px 10px;border:1px solid #e5e5e0;border-radius:8px;cursor:pointer;background:#fafaf8;user-select:none}
+.addon-row:hover{border-color:#ddd}
+.addon-row.sel{border-color:#F7A11A;background:#fff8ee}
+.addon-row.soap-row{border-color:#fde68a}
+.addon-row.soap-row.sel{background:#fefce8;border-color:#f59e0b}
+.addon-row input[type=checkbox]{width:15px;height:15px;flex-shrink:0;accent-color:#F7A11A}
+.total-row{display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding-top:12px;border-top:1px solid #eee}
+.total-amt{font-size:24px;font-weight:700;color:#F7A11A}
+.breakdown{font-size:12px;color:#aaa;margin-top:2px}
+.reward-banner{background:#dcfce7;border:1px solid #86efac;border-radius:8px;padding:10px 12px;font-size:13px;color:#166534;margin-top:10px}
+.reward-opts{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}
+.ropt{border:1px solid #e5e5e0;border-radius:8px;padding:8px 10px;font-size:12px;cursor:pointer;background:#fafaf8;text-align:left}
+.ropt:hover{border-color:#F7A11A}
+.ropt.sel{border-color:#22c55e;background:#dcfce7;color:#166534;font-weight:500}
+.txn-item{display:flex;justify-content:space-between;align-items:flex-start;padding:9px 0;border-bottom:1px solid #f0f0ec;gap:8px}
+.txn-item:last-child{border-bottom:none}
+.txn-svc{font-size:13px;font-weight:500}
+.txn-meta{font-size:11px;color:#aaa;margin-top:2px}
+.txn-reward{font-size:11px;color:#166534;margin-top:2px}
+.txn-amt{font-size:15px;font-weight:700;text-align:right;white-space:nowrap}
+.txn-orig{font-size:11px;color:#ccc;text-decoration:line-through;text-align:right}
+.sep{height:1px;background:#f0f0ec;margin:12px 0}
+.toast{position:fixed;bottom:20px;right:20px;background:#1a1a1a;color:#fff;border-radius:10px;padding:10px 16px;font-size:13px;font-weight:500;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999;max-width:300px}
+.toast.show{opacity:1}
+.toast.err{background:#991b1b}
+.empty{text-align:center;padding:2.5rem;color:#bbb;font-size:14px}
+.loader{position:fixed;inset:0;background:rgba(255,255,255,.75);display:flex;align-items:center;justify-content:center;z-index:100;gap:10px;font-size:14px;color:#888}
+.spinner{width:20px;height:20px;border:2px solid #F7A11A;border-top-color:transparent;border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+  <h1>Cayabyab WashHouse</h1>
+  <span class="sub">Loyalty Portal</span>
+</div>
+
+<div class="container">
+
+  <div id="view-list">
+    <div class="topbar">
+      <input type="text" id="search" placeholder="Search customer..." oninput="renderList()">
+      <select id="filter-card" onchange="renderList()">
+        <option value="">All customers</option>
+        <option value="has">Has loyalty card</option>
+        <option value="lost">Lost card</option>
+        <option value="none">No card</option>
+      </select>
+      <button class="btn primary" onclick="openAdd()">+ Add customer</button>
+      <button class="btn" onclick="loadCustomers()" title="Refresh">↺ Refresh</button>
+    </div>
+    <div class="grid" id="customer-grid"></div>
+  </div>
+
+  <div id="view-detail" style="display:none">
+    <button class="btn" onclick="backToList()" style="margin-bottom:14px">← Back</button>
+    <div class="panel" id="detail-panel"></div>
+    <div class="panel">
+      <h3>Record a visit</h3>
+      <div class="row2">
+        <div class="field"><label>Date</label><input type="date" id="txn-date"></div>
+        <div class="field"><label>Delivery / pick-up</label>
+          <select id="txn-delivery" onchange="toggleDeliveryFee();recalc()">
+            <option value="pickup">Pick-up (no fee)</option>
+            <option value="deliver_free">Deliver — within village (free)</option>
+            <option value="deliver_paid">Deliver — outside village</option>
+          </select>
+        </div>
+      </div>
+      <div id="delivery-fee-row" style="display:none;margin-top:8px">
+        <div class="field" style="max-width:180px"><label>Delivery fee (₱)</label>
+          <input type="number" id="delivery-fee" min="0" placeholder="0" oninput="recalc()">
+        </div>
+      </div>
+      <div class="sep"></div>
+      <div style="font-size:12px;color:#888;margin-bottom:6px">Services</div>
+      <div id="svc-lines"></div>
+      <button class="btn" onclick="addSvcLine()" style="font-size:12px;margin-bottom:12px">+ Add another service</button>
+      <div style="font-size:12px;color:#888;margin-bottom:6px">Add-ons</div>
+      <div class="addons-grid" id="addons-grid"></div>
+      <div id="reward-section"></div>
+      <div class="total-row">
+        <div>
+          <div style="font-size:13px;color:#888">Total for this visit</div>
+          <div class="breakdown" id="breakdown"></div>
+        </div>
+        <div class="total-amt" id="total-display">₱0</div>
+      </div>
+      <button class="btn primary" onclick="recordVisit()" style="margin-top:12px;width:100%;justify-content:center;font-size:15px">Record visit</button>
+    </div>
+    <div class="panel">
+      <h3>Transaction history</h3>
+      <div id="txn-list"></div>
+    </div>
+  </div>
+
+  <div id="view-add" style="display:none">
+    <button class="btn" onclick="backToList()" style="margin-bottom:14px">← Back</button>
+    <div class="panel">
+      <h3>Add customer</h3>
+      <div class="row2">
+        <div class="field"><label>Name</label><input type="text" id="add-name" placeholder="Full name"></div>
+        <div class="field"><label>Address</label><input type="text" id="add-addr" placeholder="Blk X Lot X Phase X"></div>
+      </div>
+      <div class="field" style="margin-top:10px"><label>Loyalty card status</label>
+        <select id="add-card">
+          <option value="has">Has loyalty card</option>
+          <option value="lost">Lost card (starts from 0)</option>
+          <option value="none">No card yet</option>
+        </select>
+      </div>
+      <button class="btn primary" onclick="saveNewCustomer()" style="margin-top:14px;width:100%;justify-content:center">Save customer</button>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+<div class="loader" id="loader" style="display:none"><div class="spinner"></div> Loading…</div>
+
+<script>
+// ============================================================
+// PASTE YOUR APPS SCRIPT WEB APP URL BELOW
+// ============================================================
+const SCRIPT_URL = 'PASTE_YOUR_SCRIPT_URL_HERE';
+// ============================================================
+
+const SERVICES = [
+  {name:"7kg COMBO Regular",price:180},
+  {name:"10kg COMBO Regular",price:250},
+  {name:"7kg Wash, Dry, Fold",price:140},
+  {name:"10kg Wash, Dry, Fold",price:210},
+  {name:"7kg Wash only",price:60},
+  {name:"10kg Wash only",price:80},
+  {name:"7kg Dry only",price:70},
+  {name:"3kg Comforter",price:180},
+  {name:"5kg Comforter",price:250},
+  {name:"5kg Blankets",price:180},
+  {name:"6kg Blankets",price:200},
+  {name:"8kg Blankets",price:250},
+  {name:"5kg Bedsheets",price:180},
+  {name:"6kg Bedsheets",price:200},
+  {name:"8kg Bedsheets",price:250},
+  {name:"5kg Jeans",price:180},
+  {name:"5kg Curtains",price:180},
+  {name:"(2)8kg Curtains",price:500},
+  {name:"8kg Sofa cover",price:250},
+  {name:"5kg Stuffed toys",price:180},
+  {name:"3kg Carpet",price:180},
+  {name:"8kg Doormats",price:250},
+  {name:"5kg Towels and Bags",price:180},
+  {name:"1kg Iron",price:30},
+  {name:"Other (manual)",price:0},
+];
+
+const ADDONS = [
+  {key:"fabcon",label:"Fabcon",price:10,unit:"each"},
+  {key:"liquiddet",label:"Liquid detergent",price:20,unit:"each"},
+  {key:"zonrox",label:"Zonrox",price:15,unit:"each"},
+  {key:"custsoap",label:"Customer has own soap/fabcon",price:-40,special:true},
+];
+
+let customers=[], nextLocalId=9000, activeId=null, selectedReward=null;
+let svcLines=[{svc:SERVICES[0].name,qty:1,manual:0}];
+let addonQtys={fabcon:0,liquiddet:0,zonrox:0,custsoap:false};
+
+// ---- API ----
+async function apiFetch(params){
+  const url=SCRIPT_URL+'?'+new URLSearchParams(params);
+  const res=await fetch(url);
+  return res.json();
+}
+async function apiPost(body){
+  const res=await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify(body),headers:{'Content-Type':'application/json'}});
+  return res.json();
+}
+
+async function loadCustomers(){
+  showLoader(true);
+  try{
+    const data=await apiFetch({action:'getCustomers'});
+    if(data&&data.customers) customers=data.customers.map(c=>({...c,stamps:Number(c.stamps),txns:[]}));
+  }catch(e){showToast('Could not reach Google Sheets','err');}
+  showLoader(false);
+  renderList();
+}
+
+async function loadTxns(id){
+  try{
+    const data=await apiFetch({action:'getTransactions',customerId:id});
+    const c=customers.find(x=>String(x.id)===String(id));
+    if(c&&data&&data.transactions) c.txns=data.transactions;
+  }catch(e){}
+}
+
+// ---- HELPERS ----
+function initials(n){return n.split(' ').slice(0,2).map(w=>w[0]||'').join('').toUpperCase()}
+function getReward(s){const c=s%15;if(c===5)return{type:'disc',amount:30,label:'₱30 off'};if(c===10)return{type:'disc',amount:50,label:'₱50 off'};if(c===0&&s>0)return{type:'free',label:'Free reward'};return null;}
+function nextReward(s){const c=s%15;if(c<5)return{in:5-c,label:'₱30 off'};if(c<10)return{in:10-c,label:'₱50 off'};return{in:15-c,label:'free reward'};}
+function stamps(s,max){
+  const show=max||Math.max(15,Math.ceil((s||1)/15)*15);
+  return Array.from({length:show},(_,i)=>{
+    const n=i+1,m=n%15,isMile=(m===5||m===10||m===0);
+    return `<div class="stamp ${n<=s?(isMile?'milestone':'filled'):''}" title="Visit ${n}">${isMile&&n<=s?'★':''}</div>`;
+  }).join('');
+}
+
+// ---- LIST ----
+function renderList(){
+  const q=document.getElementById('search').value.toLowerCase();
+  const cf=document.getElementById('filter-card').value;
+  const g=document.getElementById('customer-grid');
+  const list=customers.filter(c=>(c.name.toLowerCase().includes(q)||(c.addr||'').toLowerCase().includes(q))&&(!cf||c.card===cf));
+  if(!list.length){g.innerHTML=`<div class="empty" style="grid-column:1/-1">${customers.length?'No customers match.':'No customers yet — add your first one!'}</div>`;return;}
+  g.innerHTML=list.map(c=>{
+    const rw=getReward(c.stamps),nr=nextReward(c.stamps);
+    const cb=c.card==='has'?'<span class="badge has">✓ Has card</span>':c.card==='lost'?'<span class="badge lost">⚠ Lost card</span>':'<span class="badge none">No card</span>';
+    const rb=rw?`<span class="reward-ready">★ ${rw.label} ready!</span>`:`<span class="next-r">${nr.in} visit${nr.in>1?'s':''} to ${nr.label}</span>`;
+    return `<div class="card" onclick="openDetail('${c.id}')">
+      <div class="card-top"><div class="avatar">${initials(c.name)}</div><div><div class="cname">${c.name}</div><div class="caddr">${c.addr||'—'}</div></div></div>
+      <div class="stamps-row">${stamps(c.stamps,15)}</div>
+      <div style="font-size:11px;color:#bbb;margin-bottom:6px">${c.stamps} visit${c.stamps!==1?'s':''} total</div>
+      <div class="card-footer">${cb}${rb}</div>
+    </div>`;
+  }).join('');
+}
+
+// ---- DETAIL ----
+async function openDetail(id){
+  activeId=id; selectedReward=null;
+  svcLines=[{svc:SERVICES[0].name,qty:1,manual:0}];
+  addonQtys={fabcon:0,liquiddet:0,zonrox:0,custsoap:false};
+  show('detail');
+  document.getElementById('txn-date').value=new Date().toISOString().split('T')[0];
+  document.getElementById('txn-delivery').value='pickup';
+  document.getElementById('delivery-fee-row').style.display='none';
+  showLoader(true);
+  await loadTxns(id);
+  showLoader(false);
+  renderDetail(); renderSvcLines(); renderAddons(); recalc();
+}
+
+function renderDetail(){
+  const c=customers.find(x=>String(x.id)===String(activeId));
+  if(!c)return;
+  const opts=['has','lost','none'].map(v=>`<option value="${v}" ${c.card===v?'selected':''}>${v==='has'?'Has loyalty card':v==='lost'?'Lost card (starts from 0)':'No card yet'}</option>`).join('');
+  document.getElementById('detail-panel').innerHTML=`
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap">
+      <div class="avatar" style="width:44px;height:44px;font-size:15px">${initials(c.name)}</div>
+      <div><div style="font-size:17px;font-weight:600">${c.name}</div><div style="font-size:13px;color:#888">${c.addr||'—'}</div></div>
+      <div style="margin-left:auto">
+        <label style="font-size:12px;color:#888;display:block;margin-bottom:3px">Card status</label>
+        <select onchange="updateCard('${c.id}',this.value)" style="padding:6px 10px;border:1px solid #ddd;border-radius:8px;font-size:13px">${opts}</select>
+      </div>
+    </div>
+    <div class="stamps-row" style="margin-bottom:6px">${stamps(c.stamps)}</div>
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:4px">
+      <span style="font-size:13px;color:#aaa">${c.stamps} visits total</span>
+      ${getReward(c.stamps)?`<span style="font-size:13px;font-weight:600;color:#166534">★ ${getReward(c.stamps).label} available now</span>`:`<span style="font-size:12px;color:#bbb">${nextReward(c.stamps).in} more visit${nextReward(c.stamps).in>1?'s':''} to ${nextReward(c.stamps).label}</span>`}
+    </div>`;
+  const tl=document.getElementById('txn-list');
+  if(!c.txns||!c.txns.length){tl.innerHTML='<div class="empty">No visits recorded yet.</div>';return;}
+  tl.innerHTML=[...c.txns].reverse().map(t=>`
+    <div class="txn-item">
+      <div>
+        <div class="txn-svc">${t.svcSummary}</div>
+        <div class="txn-meta">${t.date} · Visit #${t.visitNum}${t.delivery&&t.delivery!=='Pick-up'?' · '+t.delivery:''}</div>
+        ${t.addons?`<div class="txn-meta">${t.addons}</div>`:''}
+        ${t.reward?`<div class="txn-reward">★ ${t.reward}</div>`:''}
+      </div>
+      <div>
+        ${Number(t.disc)>0?`<div class="txn-orig">₱${t.orig}</div>`:''}
+        <div class="txn-amt">₱${t.amt}</div>
+      </div>
+    </div>`).join('');
+}
+
+async function updateCard(id,val){
+  const c=customers.find(x=>String(x.id)===String(id));
+  if(!c)return;
+  if(val==='lost') c.stamps=0;
+  c.card=val;
+  showLoader(true);
+  await apiPost({action:'updateCustomer',data:{id:c.id,name:c.name,addr:c.addr,card:c.card,stamps:c.stamps}});
+  showLoader(false);
+  showToast(val==='lost'?'Card marked as lost — stamps reset to 0':'Card status updated');
+  renderDetail();
+}
+
+// ---- SERVICE LINES ----
+function svcPrice(n){return(SERVICES.find(s=>s.name===n)||{}).price||0;}
+function buildOpts(sel){return SERVICES.map(s=>`<option value="${s.name}" ${s.name===sel?'selected':''}>${s.name}${s.price?' — ₱'+s.price:''}</option>`).join('');}
+function addSvcLine(){svcLines.push({svc:SERVICES[0].name,qty:1,manual:0});renderSvcLines();recalc();}
+function removeSvcLine(i){if(svcLines.length===1)return;svcLines.splice(i,1);renderSvcLines();recalc();}
+function updateSvcSel(i,v){svcLines[i].svc=v;renderSvcLines();recalc();}
+function updateSvcQty(i,d){svcLines[i].qty=Math.max(1,svcLines[i].qty+d);renderSvcLines();recalc();}
+function updateSvcManual(i,v){svcLines[i].manual=parseInt(v)||0;recalc();}
+function renderSvcLines(){
+  document.getElementById('svc-lines').innerHTML=svcLines.map((l,i)=>{
+    const isM=l.svc==='Other (manual)';
+    const lp=isM?(l.manual||0):svcPrice(l.svc);
+    return `<div class="svc-line">
+      <div class="field" style="flex:2;min-width:160px">${i===0?'<label>Service</label>':''}
+        <select onchange="updateSvcSel(${i},this.value)">${buildOpts(l.svc)}</select>
+      </div>
+      ${isM?`<div class="field" style="min-width:90px">${i===0?'<label>Price (₱)</label>':''}<input type="number" min="0" value="${l.manual||''}" placeholder="0" oninput="updateSvcManual(${i},this.value)"></div>`:''}
+      <div class="field" style="min-width:110px">${i===0?'<label>Qty &amp; subtotal</label>':''}
+        <div class="qty-row" style="margin-top:${i===0?4:0}px">
+          <button class="qty-btn" onclick="updateSvcQty(${i},-1)">−</button>
+          <span class="qty-val">${l.qty}</span>
+          <button class="qty-btn" onclick="updateSvcQty(${i},1)">+</button>
+          <span style="font-size:12px;color:#aaa">= ₱${lp*l.qty}</span>
+        </div>
+      </div>
+      ${svcLines.length>1?`<span class="remove-svc" onclick="removeSvcLine(${i})">×</span>`:''}
+    </div>`;
+  }).join('');
+}
+
+// ---- ADDONS ----
+function renderAddons(){
+  document.getElementById('addons-grid').innerHTML=ADDONS.map(a=>{
+    if(a.special){
+      const s=addonQtys.custsoap;
+      return `<div class="addon-row soap-row${s?' sel':''}" style="grid-column:1/-1" onclick="toggleCustSoap()">
+        <input type="checkbox" ${s?'checked':''} onclick="event.stopPropagation();toggleCustSoap()">
+        <span>${a.label} <span style="font-size:11px;color:#92400e">(−₱40 from total)</span></span>
+      </div>`;
+    }
+    const qty=addonQtys[a.key]||0,s=qty>0;
+    return `<div class="addon-row${s?' sel':''}">
+      <input type="checkbox" ${s?'checked':''} onclick="toggleAddon('${a.key}',this.checked)">
+      <span onclick="toggleAddon('${a.key}',!${s})">${a.label} — ₱${a.price}/${a.unit}</span>
+      ${s?`<div class="qty-row" style="margin-left:auto">
+        <button class="qty-btn" onclick="event.stopPropagation();changeAddon('${a.key}',-1)">−</button>
+        <span class="qty-val">${qty}</span>
+        <button class="qty-btn" onclick="event.stopPropagation();changeAddon('${a.key}',1)">+</button>
+      </div>`:''}
+    </div>`;
+  }).join('');
+}
+function toggleAddon(k,v){addonQtys[k]=v?1:0;renderAddons();recalc();}
+function changeAddon(k,d){addonQtys[k]=Math.max(0,addonQtys[k]+d);renderAddons();recalc();}
+function toggleCustSoap(){addonQtys.custsoap=!addonQtys.custsoap;renderAddons();recalc();}
+function toggleDeliveryFee(){document.getElementById('delivery-fee-row').style.display=document.getElementById('txn-delivery').value==='deliver_paid'?'':'none';}
+
+// ---- CALC ----
+function calcTotal(){
+  const c=customers.find(x=>String(x.id)===String(activeId));
+  if(!c)return{total:0,breakdown:[],nextStamp:1,rw:null,svcTotal:0,addonTotal:0,custSoapDisc:0,deliveryFee:0,loyaltyDisc:0};
+  let svcTotal=0;
+  svcLines.forEach(l=>{svcTotal+=(l.svc==='Other (manual)'?(l.manual||0):svcPrice(l.svc))*l.qty;});
+  const addonTotal=(addonQtys.fabcon||0)*10+(addonQtys.liquiddet||0)*20+(addonQtys.zonrox||0)*15;
+  const custSoapDisc=addonQtys.custsoap?40:0;
+  const delType=document.getElementById('txn-delivery').value;
+  const deliveryFee=delType==='deliver_paid'?(parseInt(document.getElementById('delivery-fee').value)||0):0;
+  const nextStamp=c.stamps+1;
+  const rw=getReward(nextStamp);
+  const loyaltyDisc=(rw&&rw.type==='disc')?rw.amount:0;
+  const total=Math.max(0,svcTotal+addonTotal-custSoapDisc+deliveryFee-loyaltyDisc);
+  const bd=[];
+  if(svcTotal) bd.push(`Services ₱${svcTotal}`);
+  if(addonTotal) bd.push(`Add-ons +₱${addonTotal}`);
+  if(custSoapDisc) bd.push(`Own soap/fabcon −₱${custSoapDisc}`);
+  if(deliveryFee) bd.push(`Delivery +₱${deliveryFee}`);
+  if(loyaltyDisc) bd.push(`Loyalty −₱${loyaltyDisc}`);
+  return{svcTotal,addonTotal,custSoapDisc,deliveryFee,loyaltyDisc,total,breakdown:bd,nextStamp,rw};
+}
+function recalc(){
+  const r=calcTotal();
+  document.getElementById('total-display').textContent=`₱${r.total}`;
+  document.getElementById('breakdown').textContent=r.breakdown.length>1?r.breakdown.join(' · '):'';
+  const rs=document.getElementById('reward-section');
+  if(r.rw){
+    if(r.rw.type==='disc'){
+      rs.innerHTML=`<div class="reward-banner">★ Visit #${r.nextStamp} loyalty reward: <strong>₱${r.rw.amount} off</strong> — already deducted above.</div>`;
+    } else {
+      const opts=['7kg regular clothes','3kg comforter','5kg bedsheets','Free laundry bag'];
+      rs.innerHTML=`<div class="reward-banner">★ Visit #${r.nextStamp} — free reward! Choose one:
+        <div class="reward-opts">${opts.map(o=>`<button class="ropt${selectedReward===o?' sel':''}" onclick="selectedReward='${o}';recalc()">${o}</button>`).join('')}</div>
+      </div>`;
+    }
+  } else rs.innerHTML='';
+}
+
+// ---- RECORD VISIT ----
+async function recordVisit(){
+  const c=customers.find(x=>String(x.id)===String(activeId));
+  if(!c)return;
+  const date=document.getElementById('txn-date').value;
+  if(!date){showToast('Enter a date','err');return;}
+  const r=calcTotal();
+  if(!r.svcTotal&&!r.rw){showToast('Add at least one service','err');return;}
+  if(r.rw&&r.rw.type==='free'&&!selectedReward){showToast('Choose a free reward first','err');return;}
+  c.stamps++;
+  const svcSummary=svcLines.map(l=>`${l.qty>1?l.qty+'× ':''}${l.svc}`).join(', ');
+  const addonParts=[];
+  if(addonQtys.fabcon) addonParts.push(`Fabcon ×${addonQtys.fabcon}`);
+  if(addonQtys.liquiddet) addonParts.push(`Liquid det ×${addonQtys.liquiddet}`);
+  if(addonQtys.zonrox) addonParts.push(`Zonrox ×${addonQtys.zonrox}`);
+  if(addonQtys.custsoap) addonParts.push('Own soap/fabcon (−₱40)');
+  const delType=document.getElementById('txn-delivery').value;
+  const deliveryLabel=delType==='pickup'?'Pick-up':delType==='deliver_free'?'Deliver (free)':'Deliver';
+  const rewardLabel=r.rw?(r.rw.type==='disc'?r.rw.label+' discount':'Free: '+selectedReward):'';
+  const txn={date,svcSummary,addons:addonParts.join(', '),delivery:deliveryLabel,deliveryFee:r.deliveryFee,
+    orig:r.svcTotal+r.addonTotal-r.custSoapDisc+r.deliveryFee,disc:r.loyaltyDisc,amt:r.total,
+    reward:rewardLabel,visitNum:c.stamps};
+  c.txns.push(txn);
+  showLoader(true);
+  await Promise.all([
+    apiPost({action:'updateCustomer',data:{id:c.id,name:c.name,addr:c.addr,card:c.card,stamps:c.stamps}}),
+    apiPost({action:'saveTransaction',data:{...txn,customerId:c.id,customerName:c.name}})
+  ]);
+  showLoader(false);
+  svcLines=[{svc:SERVICES[0].name,qty:1,manual:0}];
+  addonQtys={fabcon:0,liquiddet:0,zonrox:0,custsoap:false};
+  selectedReward=null;
+  showToast(r.loyaltyDisc?`Visit saved! ₱${r.loyaltyDisc} loyalty discount applied.`:rewardLabel?`Visit saved! ${rewardLabel}`:'Visit saved!');
+  renderDetail(); renderSvcLines(); renderAddons(); recalc();
+}
+
+// ---- ADD CUSTOMER ----
+function openAdd(){show('add');document.getElementById('add-name').value='';document.getElementById('add-addr').value='';}
+async function saveNewCustomer(){
+  const name=document.getElementById('add-name').value.trim();
+  if(!name){showToast('Enter a name','err');return;}
+  const addr=document.getElementById('add-addr').value.trim()||'—';
+  const card=document.getElementById('add-card').value;
+  showLoader(true);
+  const res=await apiPost({action:'saveCustomer',data:{name,addr,card,stamps:0}});
+  showLoader(false);
+  const newC={id:res&&res.id?res.id:nextLocalId++,name,addr,card,stamps:0,txns:[]};
+  customers.push(newC);
+  backToList(); showToast(`${name} added!`);
+}
+
+// ---- NAV ----
+function show(view){
+  document.getElementById('view-list').style.display=view==='list'?'':'none';
+  document.getElementById('view-detail').style.display=view==='detail'?'':'none';
+  document.getElementById('view-add').style.display=view==='add'?'':'none';
+}
+function backToList(){activeId=null;show('list');renderList();}
+function showLoader(v){document.getElementById('loader').style.display=v?'flex':'none';}
+function showToast(msg,type){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className='toast'+(type==='err'?' err':'');
+  t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+// ---- INIT ----
+loadCustomers();
+</script>
+</body>
+</html>
